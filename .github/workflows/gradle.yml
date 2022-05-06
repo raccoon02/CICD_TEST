@@ -1,30 +1,26 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-name: logging-system
 
+# Repo Action 페이지에 나타날 이름
+name: Spring Boot & Gradle CI/CD
+
+# Event Trigger
+# master branch에 push 또는 pull request가 발생할 경우 동작
+# branch 단위 외에도, tag나 cron 식 등을 사용할 수 있음
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
-
-env:
-  S3_BUCKET_NAME: doitbucket
-  PROJECT_NAME: SNSClone
+    branches: [ master ]
 
 jobs:
   build:
-    runs-on : ubuntu-latest
-    env:
-      JASYPT_ENCRYPTOR_PASSWORD: ${{ SECRETS.JASYPT_ENCRYPTOR_PASSWORD }}
+    # 실행 환경 지정
+    runs-on: ubuntu-latest
 
+    # Task의 sequence를 명시한다.
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
@@ -33,40 +29,33 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        shell: bash
 
+      # Build
       - name: Build with Gradle
-        run: ./gradlew build
-        shell: bash
+        run: ./gradlew clean build
 
+      # 전송할 파일을 담을 디렉토리 생성
       - name: Make Directory for deliver
         run: mkdir deploy
-            
-            # Jar file Copy
+
+      # Jar 파일 Copy
       - name: Copy Jar
         run: cp ./build/libs/*.jar ./deploy/
 
-              # appspec.yml file Copy
+      # appspec.yml Copy
       - name: Copy appspec
         run: cp ./appspec.yml ./deploy/
 
-              # script file Copy
+      # script file Copy
       - name: Copy shell
         run: cp ./scripts/* ./deploy/
 
-        # 압축파일 형태로 전달(codedeploy는 zip형식만 읽을 수 있음)
+      # 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./SNSClone-build.zip ./deploy
+        run: zip -r -qq -j ./springboot-intro-build.zip ./deploy/
 
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Upload to S3
+      # S3 Bucket으로 copy
+      - name: Deliver to AWS S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -74,16 +63,17 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./SNSClone-build.zip s3://doitbucket/
+          ./springboot-intro-build.zip s3://springboot-intro-build/
 
-      - name: deploy
+      # Deploy
+      - name: Deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws deploy create-deployment \
-          --application-name ddddd \
-          --deployment-group-name ddddd \
+          --application-name springboot-intro \
+          --deployment-group-name springboot-intro-deploy-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=doitbucket,bundleType=zip,key=SNSClone-build.zip \
+          --s3-location bucket=springboot-intro-build,bundleType=zip,key=springboot-intro-build.zip \
           --region ap-northeast-2
