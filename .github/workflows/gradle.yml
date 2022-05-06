@@ -52,7 +52,7 @@ jobs:
 
       # 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./springboot-intro-build.zip ./deploy/
+        run: zip -r -qq -j ./SNSClane-build.zip ./deploy/
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
@@ -63,7 +63,7 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./springboot-intro-build.zip s3://springboot-intro-build/
+          ./SNSClane-build.zip s3://SNSClane-build/
 
       # Deploy
       - name: Deploy
@@ -75,5 +75,5 @@ jobs:
           --application-name ddddd \
           --deployment-group-name ddddd \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=doitbucket,bundleType=zip,key=springboot-intro-build.zip \
+          --s3-location bucket=doitbucket,bundleType=zip,key=SNSClane-build.zip \
           --region ap-northeast-2
