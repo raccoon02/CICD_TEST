@@ -62,7 +62,7 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          ./SNSClane-build.zip s3://SNSClane-build/
+          ./SNSClane-build.zip s3://doitbucket/
 
       # Deploy
       - name: Deploy
