@@ -37,9 +37,4 @@ echo "> $JAR_NAME 를 profile=$IDLE_PROFILE 로 실행합니다."
 
 cd /home/ubuntu/SNSClone
 
-
-sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8081
-
-sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8082
-
 nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE sdd-0.0.1-SNAPSHOT.jar > nohup.out 2>&1 &
