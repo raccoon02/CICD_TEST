@@ -62,7 +62,6 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private \
           ./SNSClane-build.zip s3://SNSClane-build/
 
       # Deploy
