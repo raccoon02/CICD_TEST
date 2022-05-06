@@ -39,7 +39,7 @@ cd /home/ubuntu/SNSClone
 
 #java -jar -Dspring.profiles.active=$IDLE_PROFILE one-page-resume-BE-0.0.1-SNAPSHOT.jar
 #java -jar -Dspring.profiles.active=real1 one-page-resume-BE-0.0.1-SNAPSHOT.jar
-nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE -Djasypt.encryptor.password=$JASYPT_ENCRYPTOR_PASSWORD corinne_BE-0.0.1-SNAPSHOT.jar > nohup.out 2>&1 &
+nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE sdd-0.0.1-SNAPSHOT.jar > nohup.out 2>&1 &
 # > nohup.out 2>&1 &
 #nohup java -jar /home/ubuntu/app/step3/aws-exercise-0.0.1-SNAPSHOT.jar /dev/null 2> /dev/null < /dev/null
 #java -jar
