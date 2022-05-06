@@ -10,7 +10,7 @@ IDLE_PORT=$(find_idle_port)
 IDLE_PROFILE=$(find_idle_profile)
 IMAGEPATH=/home/ubuntu/SNSClone
 
-
+echo "> $IDLE_PROFILE "
 # shellcheck disable=SC1068
 
 echo "> JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}"
